@@ -166,37 +166,54 @@ def get_from_scraper(scrape, request):
     if len(recipe_json['description']) > 256:  # split at 256 as long descriptions don't look good on recipe cards
         recipe_json['steps'][0]['instruction'] = f"*{recipe_json['description']}*  \n\n" + recipe_json['steps'][0]['instruction']
 
+    def append_ingredient(ingredient_str):
+        x = ingredient_str
+        if x.strip() == '':
+            return
+        try:
+            amount, unit, food, note = ingredient_parser.parse(x)
+            ingredient = {
+                'amount': amount,
+                'food': {'name': food},
+                'unit': {'name': unit} if unit else None,
+                'note': note,
+                'original_text': x,
+            }
+        except Exception:
+            ingredient = {
+                'amount': 0,
+                'unit': None,
+                'food': {'name': x},
+                'note': '',
+                'original_text': x,
+            }
+        recipe_json['steps'][0]['ingredients'].append(ingredient)
+
     try:
-        for x in scrape.ingredients():
-            if x.strip() != '':
-                try:
-                    amount, unit, food, note = ingredient_parser.parse(x)
-                    ingredient = {
-                        'amount': amount,
-                        'food': {
-                            'name': food,
-                        },
-                        'unit': None,
-                        'note': note,
-                        'original_text': x
-                    }
-                    if unit:
-                        ingredient['unit'] = {
-                            'name': unit,
-                        }
-                    recipe_json['steps'][0]['ingredients'].append(ingredient)
-                except Exception:
+        groups = scrape.ingredient_groups()
+        if groups:
+            for group in groups:
+                if group.purpose:
                     recipe_json['steps'][0]['ingredients'].append({
                         'amount': 0,
                         'unit': None,
-                        'food': {
-                            'name': x,
-                        },
-                        'note': '',
-                        'original_text': x
+                        'food': None,
+                        'note': group.purpose,
+                        'is_header': True,
+                        'no_amount': True,
+                        'original_text': '',
                     })
+                for x in group.ingredients:
+                    append_ingredient(x)
+        else:
+            for x in scrape.ingredients():
+                append_ingredient(x)
     except Exception:
-        pass
+        try:
+            for x in scrape.ingredients():
+                append_ingredient(x)
+        except Exception:
+            pass
 
     recipe_json['properties'] = []
     try:

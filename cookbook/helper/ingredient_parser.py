@@ -182,6 +182,34 @@ class IngredientParser:
         # remove leading commas, dots and other symbols that typically do not occur at the start of an ingredient string
         ingredient = re.sub(r"^[,.\-_=+#*|\\/]+", "", ingredient)
 
+        # Normalize fullwidth Unicode chars (e.g. Japanese ｇ→g, （→() to ASCII equivalents.
+        # Limited to U+FF01–U+FF60 to preserve vulgar fractions (¼ ½ ⅛) which full NFKC would corrupt.
+        ingredient = re.sub(r'[！-｠]', lambda m: unicodedata.normalize('NFKC', m.group()), ingredient)
+        # Handle Japanese separator format "food … amount_unit" (U+2026 horizontal ellipsis).
+        # Must run after fullwidth normalization so ｇ→g, （→( etc. are already resolved.
+        if '…' in ingredient:
+            parts = ingredient.split('…', 1)
+            food_part = parts[0].strip('　 ')
+            amount_part = parts[1].strip('　 ') if len(parts) > 1 else ''
+            if amount_part:
+                # <unit><amount> or <unit><amount>と<fraction>: e.g. 大さじ1, 小さじ1/2, 大さじ1と1/2
+                jp_unit_match = re.match(r'^([^\W\d_]+)([\d/]+(?:と[\d/]+)?)\s*$', amount_part)
+                # <amount><unit>(note): e.g. 200g(10枚ほど), 30g(下記工程写真も参考に)
+                note_match = re.match(r'^(.*?)\s*\(([^)]+)\)\s*$', amount_part)
+                if jp_unit_match:
+                    unit_str = jp_unit_match.group(1)
+                    amount_str = jp_unit_match.group(2).replace('と', ' ')
+                    ingredient = f'{amount_str} {unit_str} {food_part}'
+                elif note_match and re.search(r'\d', note_match.group(1)):
+                    ingredient = f'{note_match.group(1).strip()} {food_part} ({note_match.group(2)})'
+                elif re.search(r'\d', amount_part):
+                    ingredient = f'{amount_part} {food_part}'
+                else:
+                    # No numeric amount (e.g. 適量 = "as needed") — keep as note
+                    ingredient = f'{food_part} ({amount_part})'
+            else:
+                ingredient = food_part
+
         # some people/languages put amount and unit at the end of the ingredient string
         # if something like this is detected move it to the beginning so the parser can handle it
         if len(ingredient) < 1000 and re.search(r'^([^\W\d_])+(.)*[1-9](\d)*\s*([^\W\d_])+', ingredient):
