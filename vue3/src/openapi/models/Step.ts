@@ -105,11 +105,17 @@ export interface Step {
      */
     readonly numrecipe: number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof Step
      */
     showIngredientsTable?: boolean;
+    /**
+     * Write-only URL used during import to download a step image.
+     * @type {string}
+     * @memberof Step
+     */
+    stepImageUrl?: string;
 }
 
 /**
@@ -165,6 +171,7 @@ export function StepToJSON(value?: Omit<Step, 'instructionsMarkdown'|'stepRecipe
         'file': UserFileViewToJSON(value['file']),
         'step_recipe': value['stepRecipe'],
         'show_ingredients_table': value['showIngredientsTable'],
+        'step_image_url': value['stepImageUrl'],
     };
 }
 

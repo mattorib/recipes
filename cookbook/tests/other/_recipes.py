@@ -1,16 +1,17 @@
 SIROGOHAN = {
     'file': ['sirogohan.html'],
-    'url': 'https://www.sirogohan.com/recipe/shogayaki/',
-    'name': '生姜焼き',
+    'url': 'https://www.sirogohan.com/recipe/shougayakieasy/',
+    'name': '簡単な豚の生姜焼きのレシピ／筋切り不要で作りやすい＆食べやすい！',
     'internal': True,
-    'servings': 2,
-    'servings_text': '人分',
-    'working_time': 20,
+    'working_time': 30,
     'waiting_time': 0,
-    'source_url': 'https://www.sirogohan.com/recipe/shogayaki/',
+    'source_url': 'https://www.sirogohan.com/recipe/shougayakieasy/',
+    'image_url': 'https://www.sirogohan.com/_files/recipe/images/shougayaki/shougayakieasy2713.JPG',
     'steps': [
         {
-            'instruction': '豚肉に下味をつけ、フライパンで焼く。タレを加えて絡める。',
+            # step 0: first instruction, has image
+            'instruction': '豚肉は薄切りの豚ロース肉を2人分で200ｇほど使います。それに対する生姜の分量は下の写真くらいのサイズ。30ｇほどあれば生姜の風味もしっかり出ます。',
+            'step_image_url': 'https://www.sirogohan.com/_files/recipe/images/shougayaki/shougayakieasy1.JPG',
             'ingredients': [
                 {
                     'amount': 200,
@@ -27,6 +28,7 @@ SIROGOHAN = {
                     'original_text': 'キャベツのせん切り　…　適量',
                 },
                 {
+                    # A-group header from ingredient_groups
                     'amount': 0,
                     'food': None,
                     'unit': None,
@@ -42,15 +44,23 @@ SIROGOHAN = {
                     'note': '',
                     'original_text': '醤油　…　大さじ1と1/2',
                 },
-                {
-                    'amount': 0.5,
-                    'food': {'name': 'みりん'},
-                    'unit': {'name': '大さじ'},
-                    'note': '',
-                    'original_text': 'みりん　…　大さじ1/2',
-                },
             ],
-        }
+        },
+        {
+            # step 4: grate ginger, has image
+            'instruction': 'そこに、生姜の皮を薄くむいてから、生姜30gほどを全量すりおろします。※ケチャップは隠し味程度に、写真くらいの少量でOK！',
+            'step_image_url': 'https://www.sirogohan.com/_files/recipe/images/shougayaki/shougayakieasy2.JPG',
+        },
+        {
+            # step 6: marinate, has image
+            'instruction': '漬け込む時間は【10～15分】ほど。途中に豚肉の上下を一度入れ替えるとよいです。',
+            'step_image_url': 'https://www.sirogohan.com/_files/recipe/images/shougayaki/shougayakieasy4.JPG',
+        },
+        {
+            # step 9: fry onions, has image
+            'instruction': '中火にかけて熱くなったら玉ねぎを入れ、先に玉ねぎだけを【1分】炒めます。',
+            'step_image_url': 'https://www.sirogohan.com/_files/recipe/images/shougayaki/shougayakieasy7.JPG',
+        },
     ],
 }
 

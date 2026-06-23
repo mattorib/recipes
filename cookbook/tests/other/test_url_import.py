@@ -34,7 +34,7 @@ RECIPES = [
     JOURNAL_DES_FEMMES,
     MADAME_DESSERT,  # example of json only source
     MARMITON,
-    SIROGOHAN,  # sirogohan.com — tests ingredient_groups with A/B/C labels and is_header
+    SIROGOHAN,  # sirogohan.com — tests ingredient_groups with A/B/C labels, is_header, and per-step images
     TASTE_OF_HOME,
     THE_SPRUCE_EATS,  # example of non-json recipes_scraper
     TUDOGOSTOSO,

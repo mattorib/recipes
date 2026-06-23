@@ -336,6 +336,14 @@
                                     </v-col>
                                     <v-col cols="12" md="6">
                                         <v-textarea class="mt-2" v-model="s.instruction" auto-grow></v-textarea>
+                                        <v-row v-if="s.stepImageUrl" dense class="mt-1 align-center">
+                                            <v-col cols="auto">
+                                                <v-img :src="s.stepImageUrl" max-height="80px" max-width="120px" cover rounded></v-img>
+                                            </v-col>
+                                            <v-col cols="auto">
+                                                <v-btn icon="$delete" size="x-small" variant="text" color="error" @click="s.stepImageUrl = undefined"></v-btn>
+                                            </v-col>
+                                        </v-row>
                                     </v-col>
                                     <v-divider></v-divider>
                                 </v-row>

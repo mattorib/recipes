@@ -162,6 +162,12 @@ def get_from_scraper(scrape, request):
             'ingredients': [],
         })
 
+    # assign step images
+    step_images = _extract_step_images(scrape)
+    for i, step in enumerate(recipe_json['steps']):
+        if i < len(step_images) and step_images[i]:
+            step['step_image_url'] = step_images[i]
+
     recipe_json['description'] = recipe_json['description'][:512]
     if len(recipe_json['description']) > 256:  # split at 256 as long descriptions don't look good on recipe cards
         recipe_json['steps'][0]['instruction'] = f"*{recipe_json['description']}*  \n\n" + recipe_json['steps'][0]['instruction']
@@ -228,6 +234,38 @@ def get_from_scraper(scrape, request):
         # re.sub(a.param_2, a.param_3, s['instruction'])
 
     return recipe_json
+
+
+def _extract_step_images(scrape):
+    """Return a list of image URLs (or None) parallel to scrape.instructions_list()."""
+    # Prefer a scraper-provided step_images() method (e.g. sirogohan)
+    try:
+        if hasattr(scrape, 'step_images'):
+            return scrape.step_images()
+    except Exception:
+        pass
+
+    # Fall back to schema.org HowToStep image fields
+    try:
+        instructions_raw = scrape.schema.data.get('recipeInstructions', [])
+        if not isinstance(instructions_raw, list):
+            return []
+        images = []
+        for item in instructions_raw:
+            if not isinstance(item, dict) or item.get('@type') not in ('HowToStep', 'HowToSection'):
+                images.append(None)
+                continue
+            img = item.get('image')
+            if isinstance(img, list):
+                img = img[0] if img else None
+            if isinstance(img, dict):
+                img = img.get('url')
+            images.append(img if isinstance(img, str) and img.startswith('http') else None)
+        return images
+    except Exception:
+        pass
+
+    return []
 
 
 def get_recipe_properties(space, property_data):

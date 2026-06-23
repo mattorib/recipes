@@ -27,23 +27,29 @@ import {
  */
 export interface SourceImportStep {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceImportStep
      */
     instruction: string;
     /**
-     * 
+     *
      * @type {Array<SourceImportIngredient>}
      * @memberof SourceImportStep
      */
     ingredients: Array<SourceImportIngredient>;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof SourceImportStep
      */
     showIngredientsTable?: boolean;
+    /**
+     *
+     * @type {string}
+     * @memberof SourceImportStep
+     */
+    stepImageUrl?: string;
 }
 
 /**
@@ -64,10 +70,11 @@ export function SourceImportStepFromJSONTyped(json: any, ignoreDiscriminator: bo
         return json;
     }
     return {
-        
+
         'instruction': json['instruction'],
         'ingredients': ((json['ingredients'] as Array<any>).map(SourceImportIngredientFromJSON)),
         'showIngredientsTable': json['show_ingredients_table'] == null ? undefined : json['show_ingredients_table'],
+        'stepImageUrl': json['step_image_url'] == null ? undefined : json['step_image_url'],
     };
 }
 
@@ -76,10 +83,11 @@ export function SourceImportStepToJSON(value?: SourceImportStep | null): any {
         return value;
     }
     return {
-        
+
         'instruction': value['instruction'],
         'ingredients': ((value['ingredients'] as Array<any>).map(SourceImportIngredientToJSON)),
         'show_ingredients_table': value['showIngredientsTable'],
+        'step_image_url': value['stepImageUrl'],
     };
 }
 

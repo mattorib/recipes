@@ -1055,11 +1055,59 @@ class StepSerializer(WritableNestedModelSerializer, ExtendedRecipeMixin):
     instructions_markdown = serializers.SerializerMethodField('get_instructions_markdown')
     file = UserFileViewSerializer(allow_null=True, required=False)
     step_recipe_data = serializers.SerializerMethodField('get_step_recipe_data')
+    step_image_url = serializers.URLField(write_only=True, required=False, allow_null=True, allow_blank=True)
     recipe_filter = 'steps'
 
     def create(self, validated_data):
         validated_data['space'] = self.context['request'].space
-        return super().create(validated_data)
+        step_image_url = validated_data.pop('step_image_url', None)
+        instance = super().create(validated_data)
+        if step_image_url:
+            self._apply_step_image_url(instance, step_image_url)
+        return instance
+
+    def update(self, instance, validated_data):
+        step_image_url = validated_data.pop('step_image_url', None)
+        instance = super().update(instance, validated_data)
+        if step_image_url:
+            self._apply_step_image_url(instance, step_image_url)
+        return instance
+
+    def _apply_step_image_url(self, step, url):
+        import io
+        import mimetypes
+        from django.core.files import File as DjangoFile
+        from django.core.files.base import ContentFile
+        from cookbook.helper.HelperFunctions import safe_request
+        from cookbook.helper.image_processing import handle_image
+        try:
+            response = safe_request('GET', url, headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0'
+            })
+            if not getattr(response, 'ok', False):
+                return
+            content_type = response.headers.get('content-type', 'image/jpeg').split(';')[0]
+            filetype = mimetypes.guess_extension(content_type) or '.jpeg'
+            img = handle_image(self.context['request'], DjangoFile(io.BytesIO(response.content)), filetype)
+            if img is None:
+                return
+            if hasattr(img, 'getvalue'):
+                img_bytes = img.getvalue()
+            else:
+                img.seek(0)
+                img_bytes = img.read()
+            user_file = UserFile.objects.create(
+                name=f'step_{step.pk}',
+                space=self.context['request'].space,
+                created_by=self.context['request'].user,
+            )
+            user_file.file.save(f'{uuid.uuid4()}{filetype}', ContentFile(img_bytes))
+            user_file.file_size_kb = round(len(img_bytes) / 1000)
+            user_file.save()
+            step.file = user_file
+            step.save()
+        except Exception:
+            pass
 
     @extend_schema_field(str)
     def get_instructions_markdown(self, obj):
@@ -1081,7 +1129,7 @@ class StepSerializer(WritableNestedModelSerializer, ExtendedRecipeMixin):
         model = Step
         fields = (
             'id', 'name', 'instruction', 'ingredients', 'instructions_markdown', 'time', 'order', 'show_as_header', 'file', 'step_recipe',
-            'step_recipe_data', 'numrecipe', 'show_ingredients_table'
+            'step_recipe_data', 'numrecipe', 'show_ingredients_table', 'step_image_url'
         )
 
 
@@ -2109,6 +2157,7 @@ class SourceImportStepSerializer(serializers.Serializer):
     instruction = serializers.CharField()
     ingredients = SourceImportIngredientSerializer(many=True)
     show_ingredients_table = serializers.BooleanField(default=True)
+    step_image_url = serializers.URLField(allow_null=True, allow_blank=True, required=False)
 
 
 class SourceImportKeywordSerializer(serializers.Serializer):
