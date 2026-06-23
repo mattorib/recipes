@@ -2096,10 +2096,12 @@ class SourceImportUnitSerializer(serializers.Serializer):
 
 class SourceImportIngredientSerializer(serializers.Serializer):
     amount = serializers.FloatField()
-    food = SourceImportFoodSerializer()
-    unit = SourceImportUnitSerializer()
+    food = SourceImportFoodSerializer(allow_null=True)
+    unit = SourceImportUnitSerializer(allow_null=True)
     note = serializers.CharField(required=False)
     order = serializers.IntegerField(required=False, allow_null=True)
+    is_header = serializers.BooleanField(required=False, default=False)
+    no_amount = serializers.BooleanField(required=False, default=False)
     original_text = serializers.CharField()
 
 

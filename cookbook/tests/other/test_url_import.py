@@ -9,7 +9,8 @@ from cookbook.tests.conftest import validate_recipe
 
 from ._recipes import (ALLRECIPES, AMERICAS_TEST_KITCHEN, CHEF_KOCH, CHEF_KOCH2, COOKPAD,
                        COOKS_COUNTRY, DELISH, FOOD_NETWORK, GIALLOZAFFERANO, JOURNAL_DES_FEMMES,
-                       MADAME_DESSERT, MARMITON, TASTE_OF_HOME, THE_SPRUCE_EATS, TUDOGOSTOSO)
+                       MADAME_DESSERT, MARMITON, SIROGOHAN, TASTE_OF_HOME, THE_SPRUCE_EATS,
+                       TUDOGOSTOSO)
 
 IMPORT_SOURCE_URL = 'api_recipe_from_source'
 DATA_DIR = "cookbook/tests/other/test_data/"
@@ -33,6 +34,7 @@ RECIPES = [
     JOURNAL_DES_FEMMES,
     MADAME_DESSERT,  # example of json only source
     MARMITON,
+    SIROGOHAN,  # sirogohan.com — tests ingredient_groups with A/B/C labels and is_header
     TASTE_OF_HOME,
     THE_SPRUCE_EATS,  # example of non-json recipes_scraper
     TUDOGOSTOSO,

@@ -33,37 +33,49 @@ import {
  */
 export interface SourceImportIngredient {
     /**
-     * 
+     *
      * @type {number}
      * @memberof SourceImportIngredient
      */
     amount: number;
     /**
-     * 
+     *
      * @type {SourceImportFood}
      * @memberof SourceImportIngredient
      */
-    food: SourceImportFood;
+    food: SourceImportFood | null;
     /**
-     * 
+     *
      * @type {SourceImportUnit}
      * @memberof SourceImportIngredient
      */
-    unit: SourceImportUnit;
+    unit: SourceImportUnit | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceImportIngredient
      */
     note?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof SourceImportIngredient
      */
     order?: number;
     /**
-     * 
+     *
+     * @type {boolean}
+     * @memberof SourceImportIngredient
+     */
+    isHeader?: boolean;
+    /**
+     *
+     * @type {boolean}
+     * @memberof SourceImportIngredient
+     */
+    noAmount?: boolean;
+    /**
+     *
      * @type {string}
      * @memberof SourceImportIngredient
      */
@@ -90,12 +102,14 @@ export function SourceImportIngredientFromJSONTyped(json: any, ignoreDiscriminat
         return json;
     }
     return {
-        
+
         'amount': json['amount'],
         'food': SourceImportFoodFromJSON(json['food']),
         'unit': SourceImportUnitFromJSON(json['unit']),
         'note': json['note'] == null ? undefined : json['note'],
         'order': json['order'] == null ? undefined : json['order'],
+        'isHeader': json['is_header'] == null ? undefined : json['is_header'],
+        'noAmount': json['no_amount'] == null ? undefined : json['no_amount'],
         'originalText': json['original_text'],
     };
 }
@@ -105,12 +119,14 @@ export function SourceImportIngredientToJSON(value?: SourceImportIngredient | nu
         return value;
     }
     return {
-        
+
         'amount': value['amount'],
         'food': SourceImportFoodToJSON(value['food']),
         'unit': SourceImportUnitToJSON(value['unit']),
         'note': value['note'],
         'order': value['order'],
+        'is_header': value['isHeader'],
+        'no_amount': value['noAmount'],
         'original_text': value['originalText'],
     };
 }

@@ -1,3 +1,59 @@
+SIROGOHAN = {
+    'file': ['sirogohan.html'],
+    'url': 'https://www.sirogohan.com/recipe/shogayaki/',
+    'name': '生姜焼き',
+    'internal': True,
+    'servings': 2,
+    'servings_text': '人分',
+    'working_time': 20,
+    'waiting_time': 0,
+    'source_url': 'https://www.sirogohan.com/recipe/shogayaki/',
+    'steps': [
+        {
+            'instruction': '豚肉に下味をつけ、フライパンで焼く。タレを加えて絡める。',
+            'ingredients': [
+                {
+                    'amount': 200,
+                    'food': {'name': '豚ロース肉(薄切り)'},
+                    'unit': {'name': 'g'},
+                    'note': '10枚ほど',
+                    'original_text': '豚ロース肉（薄切り）　…　200ｇ（10枚ほど）',
+                },
+                {
+                    'amount': 0,
+                    'food': {'name': 'キャベツのせん切り'},
+                    'unit': None,
+                    'note': '適量',
+                    'original_text': 'キャベツのせん切り　…　適量',
+                },
+                {
+                    'amount': 0,
+                    'food': None,
+                    'unit': None,
+                    'note': 'A',
+                    'is_header': True,
+                    'no_amount': True,
+                    'original_text': '',
+                },
+                {
+                    'amount': 1.5,
+                    'food': {'name': '醤油'},
+                    'unit': {'name': '大さじ'},
+                    'note': '',
+                    'original_text': '醤油　…　大さじ1と1/2',
+                },
+                {
+                    'amount': 0.5,
+                    'food': {'name': 'みりん'},
+                    'unit': {'name': '大さじ'},
+                    'note': '',
+                    'original_text': 'みりん　…　大さじ1/2',
+                },
+            ],
+        }
+    ],
+}
+
 ALLRECIPES = {
     'file': ['allrecipes.html'],
     'url': 'https://www.allrecipes.com/recipe/24010/easy-chicken-marsala/',

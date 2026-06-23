@@ -307,15 +307,20 @@
                                             <vue-draggable v-model="s.ingredients" group="ingredients" handle=".drag-handle" :empty-insert-threshold="25">
                                                 <v-list-item v-for="(i, ingredientIndex) in s.ingredients" border>
                                                     <v-icon size="small" class="drag-handle cursor-grab mr-2" icon="$dragHandle"></v-icon>
-                                                    <v-chip density="compact" label class="mr-1">{{ i.amount }}</v-chip>
-                                                    <v-chip density="compact" label class="mr-1" v-if="i.unit">{{ i.unit.name }}</v-chip>
-                                                    <v-chip density="compact" label class="mr-1" v-if="i.food">{{ i.food.name }}</v-chip>
+                                                    <template v-if="i.isHeader || i.originalText === ''">
+                                                        <strong>{{ i.note }}</strong>
+                                                    </template>
+                                                    <template v-else>
+                                                        <v-chip density="compact" label class="mr-1">{{ i.amount }}</v-chip>
+                                                        <v-chip density="compact" label class="mr-1" v-if="i.unit">{{ i.unit.name }}</v-chip>
+                                                        <v-chip density="compact" label class="mr-1" v-if="i.food">{{ i.food.name }}</v-chip>
+                                                    </template>
                                                     <template #append>
                                                         <v-btn variant="plain" size="small" icon class="float-right">
                                                             <v-icon icon="$menu"></v-icon>
                                                             <v-menu activator="parent">
                                                                 <v-list>
-                                                                    <v-list-item prepend-icon="$edit" @click="editingIngredient = i; dialog=true">{{ $t('Edit') }}</v-list-item>
+                                                                    <v-list-item prepend-icon="$edit" @click="editingIngredient = i; dialog=true" v-if="!i.isHeader && i.originalText !== ''">{{ $t('Edit') }}</v-list-item>
                                                                     <v-list-item prepend-icon="$delete" @click="deleteIngredient(s,i)">{{ $t('Delete') }}</v-list-item>
                                                                     <v-list-item prepend-icon="fa-solid fa-sort"
                                                                                  @click="editingIngredientIndex = ingredientIndex; editingStepIndex = stepIndex; editingStep = s;  dialogIngredientSorter = true">
